@@ -52,7 +52,7 @@ app.get("/top-loser",async (req,res,next)=>{
   let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://pro-api.coinmarketcap.com/v1/cryptocurrency/trending/gainers-losers?limit=1000`,
+      url: `https://pro-api.coinmarketcap.com/v1/cryptocurrency/trending/gainers-losers?limit=1000&sort=percent_change_24h&sort_dir=asc`,
       headers: { 
         'X-CMC_PRO_API_KEY': process.env.API_KEY
       }
@@ -63,6 +63,7 @@ app.get("/top-loser",async (req,res,next)=>{
     let max_required_cmc_rank = Number(req.query.count);
     try{
       let response = await axios.request(config);
+
       response.data.data.forEach((crypto) => {
             if(crypto.cmc_rank <= max_required_cmc_rank && crypto.quote.USD.percent_change_24h < 0 && crypto.quote.USD.volume_24h > 50000){
               let obj = {
