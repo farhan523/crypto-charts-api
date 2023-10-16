@@ -14,7 +14,7 @@ app.get("/top-gainers",async (req,res,next)=>{
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=5000&volume_24h_min=50001&sort=percent_change_24h&sort_dir=desc`,
+        url: `https://pro-api.coinmarketcap.com/v1/cryptocurrency/trending/gainers-losers?limit=1000&sort=percent_change_24h&sort_dir=desc`,
         headers: { 
           'X-CMC_PRO_API_KEY': process.env.API_KEY
         }
@@ -27,7 +27,7 @@ app.get("/top-gainers",async (req,res,next)=>{
         let response = await axios.request(config);
 
         response.data.data.forEach((crypto) => {
-              if(crypto.cmc_rank <= max_required_cmc_rank && crypto.quote.USD.percent_change_24h >= 0){
+              if(crypto.cmc_rank <= max_required_cmc_rank && crypto.quote.USD.percent_change_24h >= 0 && crypto.quote.USD.volume_24h > 50000){
                 let obj = {
                   id : crypto.id,
                   cmc_rank : crypto.cmc_rank,
@@ -43,7 +43,8 @@ app.get("/top-gainers",async (req,res,next)=>{
         console.log(result.length)
         res.status(200).json(result)
       }catch(error){
-        console.log("error while fetching top gainers",error)
+        res.send(error)
+        // console.log("error while fetching top gainers",error)
       }
 })
 
@@ -64,7 +65,7 @@ app.get("/top-loser",async (req,res,next)=>{
       let response = await axios.request(config);
 
       response.data.data.forEach((crypto) => {
-            if(crypto.cmc_rank <= max_required_cmc_rank && crypto.quote.USD.percent_change_24h < 0){
+            if(crypto.cmc_rank <= max_required_cmc_rank && crypto.quote.USD.percent_change_24h < 0 && crypto.quote.USD.volume_24h > 50000){
               let obj = {
                 id : crypto.id,
                 cmc_rank : crypto.cmc_rank,
