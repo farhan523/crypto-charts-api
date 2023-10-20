@@ -249,12 +249,12 @@ app.get("/trending-crypto",async (req,res,next)=>{
             percent_change_24h : crypto.quote.USD.percent_change_24h
           }
           result.push(obj);
-          
-          if(index == count - 1)
+          if(index == Number(req.query.count) - 1){
+            
               throw BreakException;
+          }
             
         });
-      console.log(result.length)
       res.status(200).json(result)
     }catch(e){
       if (e !== BreakException) res.send(e);
