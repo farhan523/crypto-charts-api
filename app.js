@@ -234,13 +234,11 @@ app.get("/trending-crypto",async (req,res,next)=>{
       }
     };
     console.log(req.query.count)
-    let max_required_cmc_rank = Number(req.query.count);
+    let BreakException = {};
     const result = [];
     try{
       let response = await axios.request(config);
-
-      response.data.data.forEach((crypto) => {
-        if(crypto.cmc_rank <= max_required_cmc_rank){
+      response.data.data.forEach((crypto,index) => {
           let obj = {
             id : crypto.id,
             cmc_rank : crypto.cmc_rank,
@@ -251,13 +249,15 @@ app.get("/trending-crypto",async (req,res,next)=>{
             percent_change_24h : crypto.quote.USD.percent_change_24h
           }
           result.push(obj);
-        }
+          
+          if(index == count - 1)
+              throw BreakException;
             
         });
       console.log(result.length)
       res.status(200).json(result)
-    }catch(error){
-      res.send(error)
+    }catch(e){
+      if (e !== BreakException) res.send(e);
       // console.log("error while fetching top gainers",error)
     }
 })
