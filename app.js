@@ -240,8 +240,8 @@ app.get("/trending-crypto",async (req,res,next)=>{
       let response = await axios.request(config);
       response.data.data.forEach((crypto,index) => {
           let obj = {
-            id : index + 1,
-            cmc_rank : crypto.cmc_rank,
+            id : crypto.id,
+            cmc_rank : index + 1,
             name : crypto.name,
             symbol : crypto.symbol,
             price: crypto.quote.USD.price,
